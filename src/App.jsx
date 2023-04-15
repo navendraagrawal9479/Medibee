@@ -1,22 +1,29 @@
-import React from 'react'
-import background from './background.png'
+import React, { useMemo } from "react";
+import background from "./background.png";
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
+import { themeSettings } from "./theme";
 
 const App = () => {
-  return (
-    <div>
-      <img 
-        alt='background' 
-        src={background} 
-        style={{
-          objectFit: 'contained',
-          position: 'absolute',
-          height: '100vh',
-          width: '100vw',
-          zIndex: -1
-        }}
-      />
-    </div>
-  )
-}
+  const theme = useMemo(() => createTheme(themeSettings()), []);
 
-export default App
+  return (
+    <ThemeProvider theme={theme}>
+      <div>
+        <img
+          alt='background'
+          src={background}
+          style={{
+            objectFit: "contained",
+            position: "absolute",
+            height: "100vh",
+            width: "100vw",
+            zIndex: -1,
+          }}
+        />
+      </div>
+    </ThemeProvider>
+  );
+};
+
+export default App;

@@ -5,5 +5,30 @@
 }
 
 body{
-  background-color: #1F2833;
+  background-color: #0B0C10;
 }
+
+@font-face {
+  font-family: "Gentona";
+  src: local("Gentona"),
+   url("./fonts/gentona.ttf") format("truetype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: "Gilroy";
+  src: local("Gilroy"),
+   url("./fonts/gilroy.ttf") format("truetype");
+  font-weight: bold;
+}
+
+@font-face {
+  font-family: 'Comfortaa';
+  src: local("ComfortaaRegular"),
+   url("./fonts/ComfortaaRegular.ttf") format("truetype");
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+  

@@ -3,6 +3,8 @@ import background from "./background.png";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import { themeSettings } from "./theme";
+import Navbar from "./components/Navbar";
+import Main from "./components/Main";
 
 const App = () => {
   const theme = useMemo(() => createTheme(themeSettings()), []);
@@ -21,6 +23,8 @@ const App = () => {
             zIndex: -1,
           }}
         />
+        <Navbar />
+        <Main />
       </div>
     </ThemeProvider>
   );

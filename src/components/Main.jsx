@@ -1,9 +1,12 @@
 import { useTheme } from "@emotion/react";
 import { Box, Button, Stack, Typography } from "@mui/material";
 import React from "react";
+import { useDispatch } from "react-redux";
+import { setOpen } from "../store/modalSlice";
 
 const Main = () => {
   const { palette } = useTheme();
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -118,6 +121,9 @@ const Main = () => {
             fontWeight: 700,
             fontSize: '1.2rem',
             fontFamily: 'Gentona',
+          }}
+          onClick={() => {
+            dispatch(setOpen({open: true}))
           }}
         >
           <h3>GET STARTED</h3>

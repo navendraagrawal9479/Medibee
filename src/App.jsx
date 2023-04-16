@@ -5,6 +5,7 @@ import { createTheme } from "@mui/material";
 import { themeSettings } from "./theme";
 import Navbar from "./components/Navbar";
 import Main from "./components/Main";
+import UploadModal from "./components/UploadModal";
 
 const App = () => {
   const theme = useMemo(() => createTheme(themeSettings()), []);
@@ -25,6 +26,7 @@ const App = () => {
         />
         <Navbar />
         <Main />
+        <UploadModal />
       </div>
     </ThemeProvider>
   );

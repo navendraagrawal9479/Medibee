@@ -2,9 +2,12 @@ import { useTheme } from '@emotion/react';
 import { Box, Button, Stack } from '@mui/material';
 import React from 'react'
 import logo from '../logo.png'
+import { useDispatch } from 'react-redux';
+import { setOpen } from '../store/modalSlice';
 
 const Navbar = () => {
   const { palette } = useTheme();
+  const dispatch = useDispatch();
 
   return (
     <Box
@@ -51,6 +54,9 @@ const Navbar = () => {
               color: palette.lightBlue,
               fontFamily: 'Gentona',
               fontSize: '1.2rem'
+            }}
+            onClick={() => {
+              dispatch(setOpen({open: true}))
             }}
           >
             UPLOAD

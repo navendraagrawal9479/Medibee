@@ -1,0 +1,9 @@
+numpy
+cv2
+matplotlib
+easyocr
+tensorflow
+fastapi
+PIL
+io
+uvicorn

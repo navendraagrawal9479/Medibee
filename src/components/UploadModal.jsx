@@ -6,13 +6,14 @@ import {
   Stack,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setOpen } from "../store/modalSlice";
 import { Close, DeleteOutlined, EditOutlined } from "@mui/icons-material";
 import { useTheme } from "@emotion/react";
 import Dropzone from "react-dropzone";
-import CircularProgress from '@mui/material/CircularProgress';
+import CircularProgress from "@mui/material/CircularProgress";
+import { Link } from "react-router-dom";
 
 const UploadModal = () => {
   const open = useSelector((state) => state.open);
@@ -20,32 +21,70 @@ const UploadModal = () => {
   const { palette } = useTheme();
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [medicine, setMedicine] = useState('');
+  const [medicine, setMedicine] = useState([]);
+  const [score, setScore] = useState(0);
+  // const [info, setInfo] = useState('');
 
   const onSubmit = async () => {
-    if(!image)return;
+    if (!image) return;
     setIsLoading(true);
     const formData = new FormData();
-    formData.append('file', image);
+    formData.append("file", image);
 
-    const response = await fetch('http://127.0.0.1:8000/predict', {
-      method: 'POST',
-      // headers: {
-      //   'Content-Type': 'application/json',
-      //   'accept':'application/json'
-      // },
-      body: formData
-    })
-    if(!response.ok){
-      setIsLoading(false);
-      return;
-    }
+    // const response = await fetch("http://127.0.0.1:8000/predict", {
+    //   method: "POST",
+    //   // headers: {
+    //   //   'Access-Control-Allow-Origin': 'http://localhost:3000',
+    //   // },
+    //   body: formData,
+    // });
+    // if (!response.ok) {
+    //   setIsLoading(false);
+    //   return;
+    // }
 
-    const data = await response.json();
-    setMedicine(data?.medicine)
+    // const data = await response.json();
+    // setMedicine(data?.medicine);
+    // console.log(data);
+    const data = new FormData();
+    data.append('file', image);
+
+    const xhr = new XMLHttpRequest();
+    xhr.addEventListener("readystatechange", function () {
+      if (this.readyState === this.DONE) {
+        const response = JSON.parse(this.responseText);
+        const score = response.result[0].prediction[0].score * 100;
+        const ocrText = response.result[0].prediction[0].ocr_text;
+        setScore(score);
+        const med = ocrText.split('\n');
+        setMedicine(med);
+      }
+    });
+
+    xhr.open("POST", "https://app.nanonets.com/api/v2/OCR/Model/7d294680-5334-4c02-bb5b-9dde724d7504/LabelFile/?async=false");
+    xhr.setRequestHeader("authorization", "Basic " + btoa("dcadbb14-e400-11ed-bb1a-26ce8ce74d24:"));
+    xhr.send(data);
+
+    // const detailsForm = new FormData();
+    // detailsForm.append('text', 'PARACETAMOL');
+
+    // const detailsResponse = await fetch(`http://127.0.0.1:8000/info`, {
+    //   method: 'POST',
+    //   body: {
+    //     text: 'PARACETAMOL'
+    //   }
+    // })
+
+    // const detailsData = await detailsResponse.json();
+    // console.log(detailsResponse);
+    // const {data} = await axios.get('https://www.apollopharmacy.in/salt/PARACETAMOL', {
+    //   mode: 'no-cors'
+    // });
+
+    // console.log(data);
 
     setIsLoading(false);
-  }
+  };
 
   return (
     <Dialog
@@ -69,16 +108,16 @@ const UploadModal = () => {
             width: "100%",
             display: "flex",
             flexDirection: "row",
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            p:1
+            alignItems: "center",
+            justifyContent: "space-between",
+            p: 1,
           }}
         >
           <Typography
             style={{
               color: palette.lightBlue,
-              fontFamily: 'Gilroy',
-              fontSize: '1.2rem'
+              fontFamily: "Gilroy",
+              fontSize: "1.2rem",
             }}
           >
             Upload Prescription
@@ -158,23 +197,62 @@ const UploadModal = () => {
           </Dropzone>
         </Box>
         <Stack
-          alignItems={'center'}
-          justifyContent={'center'}
+          alignItems={"center"}
+          justifyContent={"center"}
           gap={2}
           sx={{
-            m: '2rem'
+            m: "2rem",
           }}
         >
-          {isLoading && <CircularProgress sx={{color: palette.lightBlue}} />}
-          {!isLoading && medicine && (
+          {isLoading && <CircularProgress sx={{ color: palette.lightBlue }} />}
+          {medicine.length !== 0 && (
             <Typography
               style={{
                 color: palette.lightBlue,
-                fontFamily: 'Gilroy',
-                fontSize: '1.2rem'
+                fontFamily: "Gilroy",
+                fontSize: "1.2rem",
               }}
             >
-              Medicine: {medicine}
+              Medicines:
+            </Typography>
+          )}
+          {medicine && (
+            <Stack
+              flexWrap={'wrap'}
+              gap={1}
+              alignItems={'center'}
+              justifyContent={'center'}
+              style={{
+                overflowY: 'scroll'
+              }}
+            >
+              {
+                medicine.map((m, index) => {
+                  return <Typography
+                    key={index}
+                    style={{
+                      color: palette.cyan,
+                      fontFamily: "Gilroy",
+                      fontSize: "1.2rem",
+                    }}
+                  >
+                    <Link to={`/info/${m.toUpperCase()}`} target="_blank" style={{
+                      color: palette.cyan
+                    }}>{m.toUpperCase()}</Link>
+                  </Typography>
+                })
+              }
+            </Stack>
+          )}
+          {score !== 0 && (
+            <Typography
+              style={{
+                color: palette.lightBlue,
+                fontFamily: "Gilroy",
+                fontSize: "1.2rem",
+              }}
+            >
+              Accuracy Score: {score}
             </Typography>
           )}
           <Button
@@ -184,9 +262,9 @@ const UploadModal = () => {
               fontFamily: "Gentona",
               fontSize: "1.2rem",
               m: 1,
-              '&:disabled': {
-                color: palette.blueishGreen
-              }
+              "&:disabled": {
+                color: palette.blueishGreen,
+              },
             }}
             disabled={!image || isLoading}
             onClick={onSubmit}

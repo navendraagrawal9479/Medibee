@@ -4,10 +4,12 @@ import React from 'react'
 import logo from '../logo.png'
 import { useDispatch } from 'react-redux';
 import { setOpen } from '../store/modalSlice';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const { palette } = useTheme();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -21,7 +23,7 @@ const Navbar = () => {
         alignItems={'center'}
         justifyContent={'space-between'}
       >
-        <img alt='logo' src={logo} style={{ width: '200px' }} />
+        <img alt='logo' src={logo} style={{ width: '200px' }} onClick={() => {navigate('/')}} />
         <Stack
           direction={'row'}
           alignItems={'center'}
@@ -34,6 +36,9 @@ const Navbar = () => {
               color: palette.lightBlue,
               fontFamily: 'Gentona',
               fontSize: '1.2rem'
+            }}
+            onClick={() => {
+              navigate('/vision')
             }}
           >
             VISION
